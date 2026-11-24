@@ -24,7 +24,15 @@ def main_menu_keyboard() -> ReplyKeyboardMarkup:
             KeyboardButton(text="📞 হেল্প ও সাপোর্ট (Support)"),
         ],
     ]
-    return ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
+    return ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True, is_persistent=True)
+
+def product_inline_keyboard() -> InlineKeyboardMarkup:
+    """Inline buttons under product description"""
+    kb = [
+        [InlineKeyboardButton(text="🛍️ এখনই অর্ডার করুন (Order Now)", callback_data="start_order")],
+        [InlineKeyboardButton(text="📞 কাস্টমার সাপোর্ট", callback_data="view_support")],
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=kb)
 
 def inline_start_keyboard() -> InlineKeyboardMarkup:
     """Inline buttons under welcome message"""

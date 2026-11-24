@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 
-from keyboards import main_menu_keyboard, inline_start_keyboard
+from keyboards import main_menu_keyboard, inline_start_keyboard, product_inline_keyboard
 from config import (
     PRODUCT_NAME,
     PRICE_1_PCS,
@@ -89,11 +89,19 @@ async def cb_support(callback: CallbackQuery):
 @router.message(Command("product"))
 @router.message(F.text == "✨ প্রোডাক্ট বিবরণ (Product Details)")
 async def show_product(message: Message):
-    await message.answer(PRODUCT_DETAILS_TEXT, parse_mode="Markdown")
+    await message.answer(
+        PRODUCT_DETAILS_TEXT,
+        reply_markup=product_inline_keyboard(),
+        parse_mode="Markdown"
+    )
 
 @router.callback_query(F.data == "view_product")
 async def cb_product(callback: CallbackQuery):
-    await callback.message.answer(PRODUCT_DETAILS_TEXT, parse_mode="Markdown")
+    await callback.message.answer(
+        PRODUCT_DETAILS_TEXT,
+        reply_markup=product_inline_keyboard(),
+        parse_mode="Markdown"
+    )
     await callback.answer()
 
 @router.message(Command("myorder"))
@@ -126,3 +134,20 @@ async def show_my_orders(message: Message):
             f"──────────────────\n"
         )
     await message.answer(text, parse_mode="Markdown")
+
+@router.message()
+async def fallback_message(message: Message, state: FSMContext):
+    """Fallback handler for any unrecognized text like 'hello'"""
+    current_state = await state.get_state()
+    if current_state is not None:
+        return
+
+    await message.answer(
+        START_TEXT,
+        reply_markup=main_menu_keyboard(),
+        parse_mode="Markdown"
+    )
+    await message.answer(
+        "নিচের বাটনে ক্লিক করে সরাসরি অর্ডার শুরু করতে পারেন:",
+        reply_markup=inline_start_keyboard()
+    )
