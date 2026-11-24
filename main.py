@@ -71,15 +71,18 @@ async def main():
     else:
         logger.warning("ADMIN_ID not configured in .env! Admin alerts won't be sent.")
 
-    # Drop pending updates and start polling
-    await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
-
-if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        # Drop pending updates and start polling
+        await bot.delete_webhook(drop_pending_updates=True)
+        await dp.start_polling(bot)
     finally:
         from database import close_pg_pool
         await close_pg_pool()
         await bot.session.close()
+        logger.info("Bot cleanup completed.")
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
         logger.info("Bot stopped.")
