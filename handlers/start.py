@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart, Command, StateFilter
 from aiogram.fsm.context import FSMContext
 
 from keyboards import main_menu_keyboard, inline_start_keyboard, product_inline_keyboard
@@ -135,13 +135,9 @@ async def show_my_orders(message: Message):
         )
     await message.answer(text, parse_mode="Markdown")
 
-@router.message()
-async def fallback_message(message: Message, state: FSMContext):
-    """Fallback handler for any unrecognized text like 'hello'"""
-    current_state = await state.get_state()
-    if current_state is not None:
-        return
-
+@router.message(StateFilter(None))
+async def fallback_message(message: Message):
+    """Fallback handler for any unrecognized text like 'hello' when NOT in active FSM order"""
     await message.answer(
         START_TEXT,
         reply_markup=main_menu_keyboard(),

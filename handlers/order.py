@@ -45,7 +45,8 @@ def normalize_digits(text: str) -> str:
     bn_to_en = str.maketrans('০১২৩৪৫৬৭৮৯', '0123456789')
     return text.translate(bn_to_en)
 
-@router.message(F.text.in_(["❌ বাতিল করুন", "❌ অর্ডার বাতিল করুন"]))
+@router.message(Command("cancel"))
+@router.message(F.text.contains("বাতিল"))
 async def cancel_order(message: Message, state: FSMContext):
     """Cancel order at any stage"""
     await state.clear()
@@ -55,7 +56,8 @@ async def cancel_order(message: Message, state: FSMContext):
     )
 
 @router.message(Command("order"))
-@router.message(F.text == "🛍️ অর্ডার করুন (Order Now)")
+@router.message(F.text.startswith("🛍️"))
+@router.message(F.text.contains("অর্ডার করুন"))
 @router.callback_query(F.data == "start_order")
 async def start_order_process(event: Message | CallbackQuery, state: FSMContext):
     await state.clear()
@@ -245,7 +247,7 @@ async def show_order_summary(message: Message, state: FSMContext):
     await message.answer(summary_text, reply_markup=order_confirm_keyboard(), parse_mode="Markdown")
     await state.set_state(OrderFSM.confirming_order)
 
-@router.message(OrderFSM.confirming_order, F.text == "✅ হ্যাঁ, অর্ডার নিশ্চিত করুন")
+@router.message(OrderFSM.confirming_order, F.text.contains("হ্যাঁ") | F.text.contains("নিশ্চিত"))
 async def confirm_order(message: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
     data["user_id"] = message.from_user.id

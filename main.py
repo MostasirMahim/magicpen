@@ -52,10 +52,10 @@ async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
 
-    # Include routers
+    # Include routers (order router MUST be before start router so FSM states take priority)
     dp.include_router(admin.router)
-    dp.include_router(start.router)
     dp.include_router(order.router)
+    dp.include_router(start.router)
 
     # Set commands in Telegram
     try:
