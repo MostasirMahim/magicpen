@@ -1,0 +1,41 @@
+# Environment variables and secrets (CRITICAL: Do NOT commit)
+.env
+*.env
+!*.env.example
+
+# Local SQLite databases
+*.db
+*.sqlite3
+magicpen.db
+
+# Exported data files
+*.csv
+orders_export.csv
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.docs
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# IDE and Editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+.env.example
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
